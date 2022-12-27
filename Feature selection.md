@@ -27,10 +27,24 @@ The output is guaranteed to be unique, assuming that ID is also unique. This com
 set.seed(100)
 e.out <- emptyDrops(counts(sce.pbmc))
 sce.pbmc <- sce.pbmc[,which(e.out$FDR <= 0.001)]
-                   
+
+# Quality control #
+stats <- perCellQCMetrics(sce.pbmc, subsets=list(Mito=which(location=="MT")))
+high.mito <- isOutlier(stats$subsets_Mito_percent, type="higher")
+sce.pbmc <- sce.pbmc[,!high.mito]
+
+# Normalization # 
+
+set.seed(1000)
+clusters <- quickCluster(sce.pbmc)
+sce.pbmc <- computeSumFactors(sce.pbmc, cluster=clusters)
+sce.pbmc <- logNormCounts(sce.pbmc)
 ```
 
 **explanation**
 
 With the droplet based techniques it may happen that some of the droplets remains empty. `emptyDrops()` function identifies droplets that contain cells. `e.out` is a dataMatrix where rows are cells and 5 columns are some values associated with each cell. One of the column is FDR. 
+
+
+
 
