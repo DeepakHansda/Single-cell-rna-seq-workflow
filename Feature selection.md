@@ -45,6 +45,28 @@ sce.pbmc <- logNormCounts(sce.pbmc)
 
 With the droplet based techniques it may happen that some of the droplets remains empty. `emptyDrops()` function identifies droplets that contain cells. `e.out` is a dataMatrix where rows are cells and 5 columns are some values associated with each cell. One of the column is FDR. 
 
+We need to take another data set "416b"
+
+```r
+> sce.416b <- LunSpikeInData(which = "416b")
+> class(sce.416b$block)
+[1] "integer"
+# class(sce.416b$block) is just and integer , wnd we need to convert it in "factor" to really divide all cells in to  "block"#
+sce.416b$block <- factor(sce.416b$block)
+
+# Gene annotation #
+ens.mm.v97 <- AnnotationHub()[["AH73905"]] # getting annotation object from AnnotationHub(), here a mouse database #
+
+rowData(sce.416b)$ENSEMBL <- rownames(sce.416b)
+
+rowData(sce.416b)$SYMBOL <- mapIds(ens.mm.v97, keys=rownames(sce.416b),
+    keytype="GENEID", column="SYMBOL")
+    
+rowData(sce.416b)$SEQNAME <- mapIds(ens.mm.v97, keys=rownames(sce.416b),
+    keytype="GENEID", column="SEQNAME")
+
+```
+
 
 
 
