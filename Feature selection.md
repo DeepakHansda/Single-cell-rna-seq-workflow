@@ -83,6 +83,10 @@ sce.416b <- logNormCounts(sce.416b)
  
 ```
 
+### Quantifying per-gene variation 
+
+
+
 
 
 
