@@ -98,8 +98,35 @@ curve(fit.pbmc$trend(x), col="dodgerblue", add=TRUE, lwd=2)
 ```
 
 ![image5](https://user-images.githubusercontent.com/85447250/210852749-9748987f-8123-4c57-92f9-134a8c0895e8.png)
+ 
+ Fig: Variance in the PBMC data set as a function of the mean. Each point represents a gene while the blue line represents the trend fitted to all genes.
+ 
+ ### explanation 
+ 
+ `modelGeneVar()` calculates variation of genes (features or rows of `sce`) across all cells. This will give a `data.frame` where rows corresponds to the genes and there will be certain numbers of columns which indicates total variance, technical component of variance, biological component of variance, p.value, FDR, and mean.
+ 
+ `metadata()` will give a `list` object which includes _mean_, _var_ , _trend_ and, _std.dev_. Among these _trend_ is a function which will define a curve that fits to the mean-variance plot. 
+ 
+ ```r
+ > fit.pbmc$trend
+function (x) 
+{
+    output <- FUN(x) * med
+    names(output) <- names(x)
+    output
+}
+```
+### end explanation
+ 
+ 
+At any given abundance, we assume that the variation in expression for most genes is driven by uninteresting technical processes. Under this assumption, the fitted value of the trend at any given gene’s abundance represents an estimate of its uninteresting variation, which we call the technical component. We then define the biological component for each gene as the difference between its total variance and the technical component. This biological component represents the “interesting” variation for each gene and can be used as the metric for HVG selection.
 
-Fig:Variance in the PBMC data set as a function of the mean. Each point represents a gene while the blue line represents the trend fitted to all genes
+```r
+# Ordering by most interesting genes for inspection
+dec.pbmc[order(dec.pbmc$bio, decreasing=TRUE),]
+```
+It is important to note that, the interpretation of the fitted trend as the technical component assumes that the expression profiles of most genes are dominated by random technical noise. 
+
 
 
 
