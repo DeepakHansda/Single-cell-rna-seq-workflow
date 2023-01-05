@@ -85,6 +85,19 @@ sce.416b <- logNormCounts(sce.416b)
 
 ### Quantifying per-gene variation 
 
+The simplest approach to quantifying per-gene variation is to compute the variance of the log-normalized expression values (i.e., “log-counts” ) for each gene across all cells (A. T. L. Lun, McCarthy, and Marioni 2016). The advantage of this approach is that the feature selection is based on the same log-values that are used for later downstream steps. In particular, genes with the largest variances in log-values will contribute most to the Euclidean distances between cells during procedures like clustering and dimensionality reduction. By using log-values here, we ensure that our quantitative definition of heterogeneity is consistent throughout the entire analysis. Calculation of the per-gene variance is simple but feature selection requires modelling of the mean-variance relationship. The log-transformation is not a variance stabilizing transformation in most cases, which means that the total variance of a gene is driven more by its abundance than its underlying biological heterogeneity. To account for this effect, we use the `modelGeneVar()` function to fit a trend to the variance with respect to abundance across all genes. 
+
+```r
+dec.pbmc <- modelGeneVar(sce.pbmc)
+# Visualizing the fit #
+fit.pbmc <- metadata(dec.pbmc)
+plot(fit.pbmc$mean, fit.pbmc$var, xlab="Mean of log-expression",
+    ylab="Variance of log-expression")
+    
+curve(fit.pbmc$trend(x), col="dodgerblue", add=TRUE, lwd=2) 
+```
+
+
 
 
 
