@@ -98,7 +98,8 @@ curve(fit.pbmc$trend(x), col="dodgerblue", add=TRUE, lwd=2)
 ```
 
 ![image5](https://user-images.githubusercontent.com/85447250/210852749-9748987f-8123-4c57-92f9-134a8c0895e8.png)
-Fig:  Variance in the PBMC data set as a function of the mean. Each point represents a gene while the blue line represents the trend fitted to all genes
+
+Fig:Variance in the PBMC data set as a function of the mean. Each point represents a gene while the blue line represents the trend fitted to all genes
 
 
 
