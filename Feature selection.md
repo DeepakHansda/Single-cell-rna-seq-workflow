@@ -127,6 +127,15 @@ dec.pbmc[order(dec.pbmc$bio, decreasing=TRUE),]
 ```
 It is important to note that, the interpretation of the fitted trend as the technical component assumes that the expression profiles of most genes are dominated by random technical noise. 
 
+### Quantifying technical noises
+
+The assumption in previous section may be problematic in rare scenarios where many genes at a particular abundance are affected by a biological process. For example, strong upregulation of cell type-specific genes may result in an enrichment of HVGs at high abundances. This would inflate the fitted trend in that abundance interval and compromise the detection of the relevant genes. We can avoid this problem by fitting a mean-dependent trend to the variance of the spike-in transcripts (Figure 3.2), if they are available. The premise here is that spike-ins should not be affected by biological variation, so the fitted value of the spike-in trend should represent a better estimate of the technical component for each gene.
+
+```r
+dec.spike.416b <- modelGeneVarWithSpikes(sce.416b, "ERCC")
+dec.spike.416b[order(dec.spike.416b$bio, decreasing=TRUE),]
+```
+
 
 
 
