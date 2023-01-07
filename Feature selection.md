@@ -1,4 +1,4 @@
-Several downstream processes, like characterizing heterogeniety in an exploratory analysis, we need `genes` which are differentially expressed between any two cells. So, the process of selecting such `genes` which may tell about different existing "cell groups" within a population is called Feature selection and the group of `genes` which help us doing this are called `HVGs` (Highly variable genes). We will proceed with a 10X PBMC data set.
+Several downstream processes, like characterizing heterogeniety in an exploratory analysis, we need `genes` which are differentially expressed between any two cells. So, the process of selecting such `genes` which may tell about different existing "cell groups" within a population is called Feature selection and the group of `genes` which help us doing this are called `HVGs` (Highly variable genes). We identify `HVGs` to focus on the genes that are driving heterogeneity across the population of cells. This requires estimation of the variance in expression for each gene, followed by decomposition of the variance into biological and technical components. `HVGs` are then identified as those genes with the largest biological components We will proceed with a 10X PBMC data set.
 
 ```r
 raw.path <- getTestFile("tenx-2.1.0-pbmc4k/1.0.0/raw.tar.gz")
@@ -119,7 +119,7 @@ function (x)
 ### end explanation
  
  
-At any given abundance, we assume that the variation in expression for most genes is driven by uninteresting technical processes. Under this assumption, the fitted value of the trend at any given gene’s abundance represents an estimate of its uninteresting variation, which we call the technical component. We then define the biological component for each gene as the difference between its total variance and the technical component. This biological component represents the “interesting” variation for each gene and can be used as the metric for HVG selection.
+At any given abundance, we assume that the variation in expression for most genes is driven by uninteresting technical processes. Under this assumption, the fitted value of the trend at any given gene’s abundance represents an estimate of its uninteresting variation, which we call the technical component. We then define the biological component for each gene as the difference between its total variance and the technical component. This biological component represents the “interesting” variation for each gene and can be used as the metric for HVG selection. It may be noted here that if we have access to fitting fitting a mean-dependent trend to the variance of the spike-in transcript, that would constitute a better strategy to figure out the technical component of the variation.  
 
 ```r
 # Ordering by most interesting genes for inspection
@@ -129,12 +129,32 @@ It is important to note that, the interpretation of the fitted trend as the tech
 
 ### Quantifying technical noises
 
-The assumption in previous section may be problematic in rare scenarios where many genes at a particular abundance are affected by a biological process. For example, strong upregulation of cell type-specific genes may result in an enrichment of HVGs at high abundances. This would inflate the fitted trend in that abundance interval and compromise the detection of the relevant genes. We can avoid this problem by fitting a mean-dependent trend to the variance of the spike-in transcripts (Figure 3.2), if they are available. The premise here is that spike-ins should not be affected by biological variation, so the fitted value of the spike-in trend should represent a better estimate of the technical component for each gene.
+The assumption in previous section may be problematic in rare scenarios where many genes at a particular abundance are affected by a biological process. For example, strong upregulation of cell type-specific genes may result in an enrichment of HVGs at high abundances. This would inflate the fitted trend in that abundance interval and compromise the detection of the relevant genes. We can avoid this problem by fitting a mean-dependent trend to the variance of the spike-in transcript, if they are available (Ideally, the technical component would be estimated by fitting a mean-variance trend to the spike-in transcriptsWe may recall that the same set of spike-ins was added in the same quantity to each cell. This means that the spike-in transcripts should exhibit no biological variability, i.e., any variance in their counts should be technical in origin). The premise here is that spike-ins should not be affected by biological variation, so the fitted value of the spike-in trend should represent a better estimate of the technical component for each gene.
 
 ```r
 dec.spike.416b <- modelGeneVarWithSpikes(sce.416b, "ERCC")
 dec.spike.416b[order(dec.spike.416b$bio, decreasing=TRUE),]
+
+DataFrame with 46604 rows and 6 columns
+              mean     total      tech       bio      p.value          FDR
+         <numeric> <numeric> <numeric> <numeric>    <numeric>    <numeric>
+Lyz2       6.61097   13.8497   1.57131   12.2784 1.48993e-186 1.54156e-183
+Ccl9       6.67846   13.1869   1.50035   11.6866 2.21855e-185 2.19979e-182
+Top2a      5.81024   14.1787   2.54776   11.6310  3.80015e-65  1.13040e-62
+Cd200r3    4.83180   15.5613   4.22984   11.3314  9.46221e-24  6.08574e-22
+Ccnb2      5.97776   13.1393   2.30177   10.8375  3.68706e-69  1.20193e-66
+...            ...       ...       ...       ...          ...          ...
+Rpl5-ps2   3.60625  0.612623   6.32853  -5.71590     0.999616     0.999726
+Gm11942    3.38768  0.798570   6.51473  -5.71616     0.999459     0.999726
+Gm12816    2.91276  0.838670   6.57364  -5.73497     0.999422     0.999726
+Gm13623    2.72844  0.708071   6.45448  -5.74641     0.999544     0.999726
+Rps12l1    3.15420  0.746615   6.59332  -5.84670     0.999522     0.999726
+
 ```
+
+![image6](https://user-images.githubusercontent.com/85447250/211096635-1c1e5366-a220-4b45-bc58-f559a8f6beff.png)
+
+
 
 
 
