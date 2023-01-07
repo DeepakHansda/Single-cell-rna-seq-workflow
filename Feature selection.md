@@ -119,7 +119,7 @@ function (x)
 ### end explanation
  
  
-At any given abundance, we assume that the variation in expression for most genes is driven by uninteresting technical processes. Under this assumption, the fitted value of the trend at any given gene’s abundance represents an estimate of its uninteresting variation, which we call the technical component. We then define the biological component for each gene as the difference between its total variance and the technical component. This biological component represents the “interesting” variation for each gene and can be used as the metric for HVG selection. It may be noted here that if we have access to fitting fitting a mean-dependent trend to the variance of the spike-in transcript, that would constitute a better strategy to figure out the technical component of the variation.  
+At any given abundance, we assume that the variation in expression for most genes is driven by uninteresting technical processes. Under this assumption, the fitted value of the trend at any given gene’s abundance represents an estimate of its uninteresting variation, which we call the technical component. We then define the biological component for each gene as the difference between its total variance and the technical component. This biological component represents the “interesting” variation for each gene and can be used as the metric for HVG selection. It may be noted here that if we have access to fitting fitting a mean-dependent trend to the variance of the spike-in transcript, that would constitute a better strategy to figure out the technical component of variation as we see in the following section.   
 
 ```r
 # Ordering by most interesting genes for inspection
