@@ -129,7 +129,7 @@ It is important to note that, the interpretation of the fitted trend as the tech
 
 ### Quantifying technical noises
 
-The assumption in previous section may be problematic in rare scenarios where many genes at a particular abundance are affected by a biological process. For example, strong upregulation of cell type-specific genes may result in an enrichment of HVGs at high abundances. This would inflate the fitted trend in that abundance interval and compromise the detection of the relevant genes. We can avoid this problem by fitting a mean-dependent trend to the variance of the spike-in transcript, if they are available (Ideally, the technical component would be estimated by fitting a mean-variance trend to the spike-in transcriptsWe may recall that the same set of spike-ins was added in the same quantity to each cell. This means that the spike-in transcripts should exhibit no biological variability, i.e., any variance in their counts should be technical in origin). The premise here is that spike-ins should not be affected by biological variation, so the fitted value of the spike-in trend should represent a better estimate of the technical component for each gene.
+The assumption in previous section may be problematic in rare scenarios where many genes at a particular abundance are affected by a biological process. For example, strong upregulation of cell type-specific genes may result in an enrichment of HVGs at high abundances. This would inflate the fitted trend in that abundance interval and compromise the detection of the relevant genes. We can avoid this problem by fitting a mean-dependent trend to the variance of the spike-in transcript, if they are available (Ideally, the technical component would be estimated by fitting a mean-variance trend to the spike-in transcripts. We may recall that the same set of spike-ins was added in the same quantity to each cell. This means that the spike-in transcripts should exhibit no biological variability, i.e., any variance in their counts should be technical in origin). The premise here is that spike-ins should not be affected by biological variation, so the fitted value of the spike-in trend should represent a better estimate of the technical component for each gene.
 
 ```r
 dec.spike.416b <- modelGeneVarWithSpikes(sce.416b, "ERCC")
@@ -153,6 +153,10 @@ Rps12l1    3.15420  0.746615   6.59332  -5.84670     0.999522     0.999726
 ```
 
 ![image6](https://user-images.githubusercontent.com/85447250/211096635-1c1e5366-a220-4b45-bc58-f559a8f6beff.png)
+
+**explanation**
+the assumption with `modelGeneVar()` is that for a given level of expression (abundance), the variation is gene expression is caused by the _technical reasons_ (other that underlying biological conditions). So, when we find an high expression level which may be due to strong upregulation    
+
 
 
 
