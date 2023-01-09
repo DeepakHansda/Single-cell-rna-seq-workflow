@@ -228,7 +228,7 @@ chosen <- getTopHVGs(dec.pbmc, prop=0.1)
 
 And we can have several way of retaining `HVGs`.
 
-+We can subset the `SingleCellExperiment` to only retain our selection of HVGs. In this case we will be left with only `HVGs`. If downstream processes require non `HVGs` genes then we can't provide because they are eliminated from `SingleCellExperiment`. 
++ We can subset the `SingleCellExperiment` to only retain our selection of HVGs. In this case we will be left with only `HVGs`. If downstream processes require non `HVGs` genes then we can't provide because they are eliminated from `SingleCellExperiment`. 
     
     
     ```r
@@ -237,12 +237,14 @@ And we can have several way of retaining `HVGs`.
     [1] 1274 3985
     ```
     
-+We can keep the original SingleCellExperiment object and specify the genes to use for downstream functions via an extra argument like subset.row=. This is useful if the analysis uses multiple sets of HVGs at different steps, whereby one set of HVGs can be easily swapped for another in specific steps.
++ We can keep the original `SingleCellExperiment` object and specify the genes to use for downstream functions via an extra argument like `subset.row=`. This is useful if the analysis uses multiple sets of HVGs at different steps, whereby one set of HVGs can be easily swapped for another in specific steps.
     
     ```r
     sce.pbmc <- runPCA(sce.pbmc, subset_row=chosen)
 reducedDimNames(sce.pbmc)
     ```
+    
+
 
     
 
