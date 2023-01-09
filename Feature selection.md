@@ -207,6 +207,17 @@ for (i in colnames(blocked.stats)) {
 Fig. Variance in the 416B data set as a function of the mean after blocking on the plate of origin. Each plot represents the results for a single plate, each point represents a gene (black) or spike-in transcript (red) and the blue line represents the trend fitted to all spike-ins 
 
 
+### Selecting highly variable genes
+
+Once we have quantified the per-gene variation, the next step is to select the subset of HVGs to use in downstream analyses. The most obvious selection strategy is to take the top n genes with the largest values for the relevant variance metric. For `modelGeneVar()` and `modelGeneVarWithSpikes()`, we would select the genes with the largest biological components. This is conveniently done for us via function `getTopHVgs()`, as shown below with n=1000.
+
+```r
+# taking the top 1000 genes here
+hvg.pbmc.var <- getTopHVGs(dec.pbmc, n=1000)
+
+> head(hvg.pbmc.var)
+[1] "LYZ"     "S100A9"  "S100A8"  "HLA-DRA" "CD74"    "CST3"
+```
 
 
 
