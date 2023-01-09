@@ -162,6 +162,9 @@ dec.spike.416b <- modelGeneVarWithSpikes(sce.416b, "ERCC")
 dec.spike.416b[order(dec.spike.416b$bio, decreasing = TRUE), ]
 ```
 
+### handling batch effects ###
+If we are dealing with data comprising of multiple batches then we are bound to have some variation of gene expression across batches and it is quite possible have a different set of `HVGs` for each of batch. But, at the moment we are not interested in `HVGs` driven by the batch effect rather in genes which are highly variable within each batches. This is naturally achieved by performing trend fitting and variance decomposition separately for each batch. We demonstrate this approach by treating each plate (block) in the 416B dataset as a different batch, using the `modelGeneVarWithSpikes()` function. 
+
 
 
 
