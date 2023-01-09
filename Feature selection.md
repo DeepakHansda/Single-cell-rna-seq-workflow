@@ -1,4 +1,4 @@
-Several downstream processes, like characterizing heterogeniety in an exploratory analysis, we need `genes` which are differentially expressed between any two cells. So, the process of selecting such `genes` which may tell about different existing "cell groups" within a population is called Feature selection and the group of `genes` which help us doing this are called `HVGs` (Highly variable genes). We identify `HVGs` to focus on the genes that are driving heterogeneity across the population of cells. This requires estimation of the variance in expression for each gene, followed by decomposition of the variance into biological and technical components. `HVGs` are then identified as those genes with the largest biological components We will proceed with a 10X PBMC data set.
+Several downstream processes, like characterizing heterogeniety in an exploratory analysis, we need `genes` which are differentially expressed between any two cells. So, the process of selecting such `genes` which may tell about different existing "cell groups" within a population is called Feature selection and the group of `genes` which help us doing this are called `HVGs` (Highly variable genes). We identify `HVGs` to focus on the genes that are driving heterogeneity across the population of cells. This requires estimation of the variance in expression for each gene, followed by decomposition of the variance into biological and technical components. `HVGs` are then identified as those genes with the largest biological components. We will proceed with a 10X PBMC data set.
 
 ```r
 raw.path <- getTestFile("tenx-2.1.0-pbmc4k/1.0.0/raw.tar.gz")
@@ -218,6 +218,30 @@ hvg.pbmc.var <- getTopHVGs(dec.pbmc, n=1000)
 > head(hvg.pbmc.var)
 [1] "LYZ"     "S100A9"  "S100A8"  "HLA-DRA" "CD74"    "CST3"
 ```
+
+Now we can combine all these procedures to get `HVGs`. We will take top $10%$ of the genes with the highest biological components.
+
+```r
+dec.pbmc <- modelGeneVar(sce.pbmc)
+chosen <- getTopHVGs(dec.pbmc, prop=0.1)
+```
+
+And we can have several way of retaining `HVGs`.
+
+    -1. We can subset the `SingleCellExperiment` to only retain our selection of HVGs. In this case we will be left with only `HVGs`. If downstream processes require non `HVGs` genes then we can't provide because they are eliminated from `SingleCellExperiment`. 
+    
+    ```r
+    sce.pbmc.hvg <- sce.pbmc[chosen,]
+    > dim(sce.pbmc.hvg)
+    [1] 1274 3985
+    ```
+
+    
+
+
+
+
+
 
 
 
