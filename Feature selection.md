@@ -163,7 +163,53 @@ dec.spike.416b[order(dec.spike.416b$bio, decreasing = TRUE), ]
 ```
 
 ### handling batch effects ###
-If we are dealing with data comprising of multiple batches then we are bound to have some variation of gene expression across batches and it is quite possible have a different set of `HVGs` for each of batch. But, at the moment we are not interested in `HVGs` driven by the batch effect rather in genes which are highly variable within each batches. This is naturally achieved by performing trend fitting and variance decomposition separately for each batch. We demonstrate this approach by treating each plate (block) in the 416B dataset as a different batch, using the `modelGeneVarWithSpikes()` function. 
+If we are dealing with data comprising of multiple batches then we may observe some diffrence in the variation of gene expression across batches and it is quite possible have a different set of `HVGs` for each batch. But, at the moment we are not interested in `HVGs` driven by the batch effect rather in genes which are highly variable in all batches. This is naturally achieved by performing trend fitting and variance decomposition separately for each batch. `modelGenevarWithSpikes(block=sce.416b$block)` will calculate the mean, total, bio, and technical component of variation for each block and provide the average of each component from all such blocks. We can understand this by looking below in the following dataframe. Let's take the case of first enlisted gene `Lyz2` the total variance of $13.869$ is the average of `total`=$13.3748$ from block $20160113$ and  `total`=$14.3490$ from `block` $20160325$. We demonstrate this approach by treating each plate (block) in the 416B dataset as a different batch, using the `modelGeneVarWithSpikes()` function. 
+
+```r
+dec.block.416b <- modelGeneVarWithSpikes(sce.416b, "ERCC", block=sce.416b$block)
+
+
+head(dec.block.416b[order(dec.block.416b$bio, decreasing=TRUE),])
+DataFrame with 6 rows and 7 columns
+             mean     total      tech       bio      p.value          FDR
+        <numeric> <numeric> <numeric> <numeric>    <numeric>    <numeric>
+Lyz2      6.61235   `13.8619`   1.58416   12.2777  0.00000e+00  0.00000e+00
+Ccl9      6.67841   13.2599   1.44553   11.8143  0.00000e+00  0.00000e+00
+Top2a     5.81275   14.0192   2.74571   11.2734 3.89855e-137 8.43398e-135
+Cd200r3   4.83305   15.5909   4.31892   11.2719  1.17783e-54  7.00722e-53
+Ccnb2     5.97999   13.0256   2.46647   10.5591 1.20380e-151 2.98405e-149
+Hbb-bt    4.91683   14.6539   4.12156   10.5323  2.52639e-49  1.34197e-47
+                                                      per.block
+                                                    <DataFrame>
+Lyz2    6.35652:`13.3748`:2.08227:...:6.86819:`14.3490`:1.08605:...
+Ccl9    6.68726:13.0778:1.65923:...:6.66956:13.4420:1.23184:...
+Top2a   5.34891:17.5972:3.91642:...:6.27659:10.4411:1.57501:...
+Cd200r3 4.60115:15.7870:5.55587:...:5.06496:15.3948:3.08197:...
+Ccnb2   5.56701:15.4150:3.46931:...:6.39298:10.6362:1.46362:...
+Hbb-bt  4.80514:16.2866:5.10462:...:5.02851:13.0211:3.13851:...
+```
+
+```r
+blocked.stats <- dec.block.416b$per.block
+par(mfrow=c(1,2))
+for (i in colnames(blocked.stats)) {
+  current <- blocked.stats[[i]]
+  plot(current$mean, current$total, main=i, pch=16, cex=0.5, 
+           xlab="Mean of log-expression", ylab="Variance of log-expression")
+  trendfit <- metadata(current)
+  points(trendfit$mean, trendfit$var, col="red", pch=16)
+  curve(trendfit$trend(x), col='blue', add = TRUE, lwd=2)
+}
+```
+
+![image7](https://user-images.githubusercontent.com/85447250/211233073-f80c66e7-f00a-4820-9a51-c65bbba34ccc.png)
+
+
+
+
+
+
+
 
 
 
