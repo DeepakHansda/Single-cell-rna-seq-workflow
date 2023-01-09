@@ -241,9 +241,31 @@ And we can have several way of retaining `HVGs`.
     
     ```r
     sce.pbmc <- runPCA(sce.pbmc, subset_row=chosen)
-reducedDimNames(sce.pbmc)
+    
+    > reducedDimNames(sce.pbmc)
+    [1] "PCA"
     ```
     
+ This approach is facilitated by the `rowSubset()` utility, which allows us to easily store one or more sets of interest in our `SingleCellExperiment`. By doing so, we avoid the need to keep track of a separate chosen variable and ensure that our `HVGs` set is synchronized with any downstream row subsetting of sce.pbmc.
+ 
+ ```r
+ rowSubset(sce.pbmc) <- chosen # stored in the default 'subset'.
+rowSubset(sce.pbmc, "HVGs.more") <- getTopHVGs(dec.pbmc, prop=0.2)
+rowSubset(sce.pbmc, "HVGs.less") <- getTopHVGs(dec.pbmc, prop=0.3)
+
+> head(rowData(sce.pbmc))
+DataFrame with 6 rows and 5 columns
+                           ID        Symbol    subset HVGs.more HVGs.less
+                  <character>   <character> <logical> <logical> <logical>
+RP11-34P13.3  ENSG00000243485  RP11-34P13.3     FALSE     FALSE     FALSE
+FAM138A       ENSG00000237613       FAM138A     FALSE     FALSE     FALSE
+OR4F5         ENSG00000186092         OR4F5     FALSE     FALSE     FALSE
+RP11-34P13.7  ENSG00000238009  RP11-34P13.7     FALSE     FALSE     FALSE
+RP11-34P13.8  ENSG00000239945  RP11-34P13.8     FALSE     FALSE     FALSE
+RP11-34P13.14 ENSG00000239906 RP11-34P13.14     FALSE     FALSE     FALSE
+ ```
+ 
+ 
 
 
     
